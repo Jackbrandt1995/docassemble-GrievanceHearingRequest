@@ -1,0 +1,307 @@
+---
+include:
+  - docassemble.AssemblyLine:assembly_line.yml
+---
+metadata:
+  title: >-
+    Lettertorequestagrievancehearing
+  short title: >-
+    Lettertorequestagrievance
+  description: |-
+    This interview helps someone in Massachusetts write a letter to request a grievance hearing.
+  can_I_use_this_form: |
+    If you are living in public housing in Massachusetts, you can use this interview to request a grievance hearing.
+  before_you_start: |
+    This interview will help you write a letter to request a grievance hearing.
+    
+    Before you get started, please gather:
+    
+    1. Your housing authority's address
+    2. The details of your complaint
+    
+    When you are finished, you will need to:
+    
+    1. Deliver a copy of this letter to the housing authority.
+    2. Keep a copy for yourself.
+    3. If the housing authority does not answer your letter within 30 days, send them another letter.
+  maturity: production
+  estimated_completion_minutes: 15
+  estimated_completion_delta: 5
+  LIST_topics: 
+    - "HO-00-00-00-00"
+  tags:
+    - "HO-00-00-00-00"
+  authors:
+    - Jack Brandt
+  original_form: []
+  original_form_published_on: ""
+  help_page_url: >-
+    https://www.masslegalhelp.org/housing-apartments-shelter/public-subsidized-housing/sample-letters-forms-and-worksheets
+  help_page_title: >-
+    MassLegalHelp
+  allowed_courts: []
+  typical_role: "defendant"
+  al_weaver_version: "1.11.0"
+  generated_on: "2024-09-19"
+  languages:
+    - en
+  jurisdiction: NAM-US-US+MA
+  review_date: 2024-09-19
+  form_titles:
+    - Lettertorequestagrievancehearing
+  form_numbers: []
+  update_notes: |
+---
+code: |
+  # This controls the default country and list of states in address field questions
+  AL_DEFAULT_COUNTRY = "US"
+---
+code: |
+  # This controls the default state in address field questions
+  AL_DEFAULT_STATE = "MA"
+---
+code: |
+  github_repo_name =  'docassemble-Lettertorequestagrievancehearing'
+---
+code: |
+  interview_short_title = "Write a letter to request a grievance hearing"
+---
+code: |
+  al_form_type = "letter" 
+---
+objects:
+  - users: ALPeopleList.using(there_are_any=True)
+---
+sections:
+  - review_lettertorequestagrievancehearing: Review your answers
+---
+#################### Interview order #####################
+comment: |
+  Controls order and branching logic for questions specific to this form
+id: interview_order_lettertorequestagrievancehearing
+code: |
+  # Set the allowed courts for this interview
+  nav.set_section("review_lettertorequestagrievancehearing")
+  user_role = "defendant"
+  user_ask_role = "defendant"
+  Grievance_Hearing_Request
+  users.gather()
+  set_parts(subtitle=str(users))
+  users[0].address.address
+  set_progress(20)
+  users[0].phone_number
+  housing_authority
+  housing_authority.address.block
+  complaint_facts
+  set_progress(40)
+  signature_date
+  grievance_request_name
+  interview_order_lettertorequestagrievancehearing = True
+---
+###################### Main order ######################
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  al_intro_screen
+  lettertorequestagrievancehearing_intro
+  interview_order_lettertorequestagrievancehearing
+  signature_date
+  # Store anonymous data for analytics / statistics
+  store_variables_snapshot(
+      persistent=True,
+      data={
+          "zip": showifdef("users[0].address.zip"),
+          "reached_interview_end": True,
+      },
+  )
+  lettertorequestagrievancehearing_download
+---
+id: Lettertorequestagrievancehearing
+continue button field: lettertorequestagrievancehearing_intro
+question: |
+  Lettertorequestagrievancehearing
+subquestion: |
+  This interview will help you write a letter to request a grievance hearing.
+  
+  Before you get started, please gather:
+  
+  1. Your housing authority's address
+  2. The details of your complaint
+  
+  When you are finished, you will need to:
+  
+  1. Deliver a copy of this letter to the housing authority.
+  2. Keep a copy for yourself.
+  3. If the housing authority does not answer your letter within 30 days, send them another letter.
+
+  If you are living in public housing in Massachusetts, you can use this interview to request a grievance hearing.
+
+  Most people take about 15 minutes to complete this interview.
+---
+id: Grievance Hearing Request
+question: |
+  Grievance Hearing Request
+subquestion: |
+  Your housing authority must give you notice that you have a right to file a grievance if the housing authority is:
+  
+  ▪ Terminating your lease.
+  ▪ Changing your rent.
+  ▪ Requiring you to transfer.
+  ▪ Denying your request for a transfer.
+  ▪ Denying your request to add someone to the lease.
+  ▪ Denying a request for a reasonable accommodation for a disability.
+  ▪ Denying a claim to be exempt from the community service requirement.
+  
+  Make sure that you file a grievance by the deadline on the notice and in the way described in the notice. Otherwise, you may lose your right to a grievance.
+continue button field: Grievance_Hearing_Request
+---
+id: Tell us about your housing authority
+question: |
+  Tell us about your housing authority
+fields:
+  - "Housing authority": housing_authority
+  - "Housing authority.address.address": housing_authority.address.address
+---
+id: Why do you want a grievance hearing
+question: |
+  Why do you want a grievance hearing?
+fields:
+  - "Complaint facts": complaint_facts
+---
+id: Screen four
+question: |
+  Screen four
+fields:
+  - "Grievance request name": grievance_request_name
+---
+id: preview lettertorequestagrievancehearing
+question: |
+  Preview your form before you sign it
+subquestion: |
+  Here is a preview of the form you will sign on the next page.   
+  
+  ${ al_recipient_bundle.as_pdf(key='preview') }
+
+  Click the image to open it in a new tab. Click the "Edit answers" button
+  to edit your answers.
+
+  ${ action_button_html(url_action('review_lettertorequestagrievancehearing'), label='Edit answers', color='info') }
+  
+  Remember to come back to this window to continue and sign your form.
+continue button field: lettertorequestagrievancehearing_preview_question    
+---
+code: |
+  signature_fields = ['users[0].signature']
+---
+id: lettertorequestagrievancehearing review screen
+event: review_lettertorequestagrievancehearing
+question: |
+  Review your answers
+review:
+  - Edit: housing_authority
+    button: |
+      **Housing authority**:
+      ${ housing_authority }
+  - Edit: housing_authority.address.address
+    button: |
+      **Housing authority.address.address**:
+      ${ housing_authority.address.address.block() }
+  - Edit: signature_date
+    button: |
+      **Date of Signature**:
+      ${ signature_date }
+  - Edit: users.revisit
+    button: |
+      **Users**
+
+      % for item in users:
+        * ${ item }
+      % endfor
+  - Edit: complaint_facts
+    button: |
+      **Complaint facts**:
+      ${ complaint_facts }
+  - Edit: grievance_request_name
+    button: |
+      **Grievance request name**:
+      ${ grievance_request_name }
+---
+continue button field: users.revisit
+question: |
+  Edit users
+subquestion: |
+  ${ users.table }
+
+  ${ users.add_action() }
+---
+table: users.table
+rows: users
+columns:
+  - Name: |
+      row_item.name.full() if defined("row_item.name.first") else ""
+  - Address: |
+      row_item.address.block() if defined("row_item.address.address") else ""
+  - Signature: |
+      row_item.signature if defined("row_item.signature") else ""
+  - Phone number: |
+      row_item.phone_number if defined("row_item.phone_number") else ""
+edit:
+  - name.first
+  - address.address
+  - signature
+  - phone_number
+confirm: True
+
+---
+id: download lettertorequestagrievancehearing
+event: lettertorequestagrievancehearing_download
+question: |
+  All done
+subquestion: |
+  Thank you ${users}. Your form is ready to download and deliver.
+  
+  View, download and send your form below. Click the "Edit answers" button to fix any mistakes.
+
+  ${ action_button_html(url_action('review_lettertorequestagrievancehearing'), label='Edit answers', color='info') }
+  
+  
+  ${ al_user_bundle.download_list_html() }
+  
+
+  ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
+
+progress: 100
+---
+# ALDocument objects specify the metadata for each template
+objects:
+  - lettertorequestagrievancehearing_Post_interview_instructions: ALDocument.using(title="Instructions", filename="lettertorequestagrievancehearing_next_steps.docx", enabled=True, has_addendum=False)
+  - lettertorequestagrievancehearing_attachment: ALDocument.using(title="Lettertorequestagrievancehearing", filename="lettertorequestagrievancehearing", enabled=True, has_addendum=False, )
+---
+# Bundles group the ALDocuments into separate downloads, such as for court and for the user
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[lettertorequestagrievancehearing_Post_interview_instructions, lettertorequestagrievancehearing_attachment], filename="lettertorequestagrievancehearing", title="All forms to download for your records", enabled=True)
+  - al_recipient_bundle: ALDocumentBundle.using(elements=[lettertorequestagrievancehearing_attachment],  filename="lettertorequestagrievancehearing", title="All forms to file", enabled=True)
+---
+# Each attachment defines a key in an ALDocument. We use `i` as the placeholder here so the same template is 
+# used for "preview" and "final" keys, and logic in the template checks the value of 
+# `i` to show or hide the user's signature
+attachment:
+  name: Post-interview-Instructions
+  filename: lettertorequestagrievancehearing_next_steps
+  docx template file: lettertorequestagrievancehearing_next_steps.docx
+  variable name: lettertorequestagrievancehearing_Post_interview_instructions[i]
+  skip undefined: True
+  tagged pdf: True
+---
+attachment:
+  name: lettertorequestagrievancehearing
+  filename: lettertorequestagrievancehearing
+  variable name: lettertorequestagrievancehearing_attachment[i]
+  skip undefined: True
+  docx template file: lettertorequestagrievancehearing.docx
+  tagged pdf: True
+
+
+
